@@ -44,7 +44,7 @@ namespace GameOfLifeTests
             //Assert.AreEqual(expected, mask);
 
             matrix = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
-            mask = GoL.GameOfLife.CopyToSubArray(matrix, 1, 2);
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 1, 2);
             expected = new int[3, 3] { { 0, 0, 1 }, { 0, 0, 1 }, { 0, 0, 1 } };
             Assert.AreEqual(expected, mask);
 

@@ -29,7 +29,7 @@
             {
                 for (int x = 0; x < destinationWidth; x++)
                 {
-                    int[,] mask = CopyToSubArray(matrix, x, y);
+                    int[,] mask = CopyToSubMatrix(matrix, x, y);
                     int livingNeigbors = CountLivingNeighbors(mask);
 
                     bool cellIsAlive = matrix[y, x] == 1;
@@ -56,20 +56,44 @@
         }
 
 
+
+        public static void CopyToMatrix(int[,] source, int[,] destination)
+        {
+            int sourceWidth = source.GetLength(1);
+            int sourceHeight = source.GetLength(0);
+
+            int destinationWidth = source.GetLength(1);
+            int destinationHeight = source.GetLength(0);
+
+
+            for (int y = 0; y < sourceHeight; y++)
+            {
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    if (x < destinationWidth && y < destinationHeight)
+                    {
+                        destination[y, x] = source[y, x];
+                    }
+                }
+            }
+
+        }
+
+
         /// <summary>
         /// Copies the cell's neighbors to a submatrix to determine how many neighbors are alive
         /// </summary>
         /// <param name="source">SourceMatrix</param>
         /// <param name="xpos">The cell's x-position</param>
         /// <param name="ypos">the cell's y-position</param>
-        public static int[,] CopyToSubArray(int[,] source, int xpos, int ypos)
+        public static int[,] CopyToSubMatrix(int[,] source, int xpos, int ypos)
         {
             // The mask's upper left corner position  is one field above and one field left of the cell's position
             int readOffset = -1;
             int destinationWidth = 3;
             int destinationHeight = 3;
             int sourceWidth = source.GetLength(1);
-            int sourceheight = source.GetLength(0);
+            int sourceHeight = source.GetLength(0);
 
 
             int[,] destination = new int[3, 3];
@@ -82,7 +106,7 @@
                     int xReadPos = x + xpos + readOffset;
                     int yReadPos = y + ypos + readOffset;
 
-                    if (xReadPos < 0 || xReadPos >= sourceWidth || yReadPos < 0 || yReadPos >= sourceWidth)
+                    if (xReadPos < 0 || xReadPos >= sourceWidth || yReadPos < 0 || yReadPos >= sourceHeight)
                     {
                         destination[y, x] = 0;
                     }
