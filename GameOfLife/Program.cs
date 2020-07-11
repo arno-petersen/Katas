@@ -8,14 +8,14 @@ namespace GameOfLifeConsole
     {
         static void Main(string[] args)
         {
-            int[,] matrix = new int[8, 8];//{ { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0,0 , 0, 0, 0 }, { 0, 0, 0, , 0, 0, 0, 0 }, { 0, 0, 0, 1, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 } };
+            int[,] matrix = new int[8, 8];
             int[,] blinker = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
             int[,] toad = new int[6, 6] { { 0, 0, 0, 0, 0,0 }, { 0, 0, 0, 0, 0,0 }, { 0, 0, 1, 1, 1,0 }, { 0, 1, 1, 1, 0,0 }, { 0, 0, 0, 0, 0,0 }, { 0, 0, 0, 0, 0, 0 } };
             int[,] beacon = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 0, 0, 0 } };
             int[,] glider = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 1, 0, 1, 0, 0 }, { 0, 0, 1, 1, 0, 0 }, { 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
-
-
-            GameOfLife.CopyToMatrix(beacon, matrix);
+            
+            GameOfLife.InitializeMatrixwithRandomValues(matrix);
+            //GameOfLife.CopyToMatrix(beacon, matrix);
 
             while (true)
             {
@@ -23,9 +23,6 @@ namespace GameOfLifeConsole
                 WriteArrayToScreen(matrix);
                 Thread.Sleep(200);
             }
-
-            //WriteArrayToScreen(matrix);
-
         }
 
         private static void WriteArrayToScreen(int[,] array)

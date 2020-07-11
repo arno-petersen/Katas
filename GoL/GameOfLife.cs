@@ -1,4 +1,6 @@
-﻿namespace GoL
+﻿using System;
+
+namespace GoL
 {
     public class GameOfLife
     {
@@ -62,8 +64,8 @@
             int sourceWidth = source.GetLength(1);
             int sourceHeight = source.GetLength(0);
 
-            int destinationWidth = source.GetLength(1);
-            int destinationHeight = source.GetLength(0);
+            int destinationWidth = destination.GetLength(1);
+            int destinationHeight = destination.GetLength(0);
 
 
             for (int y = 0; y < sourceHeight; y++)
@@ -73,6 +75,33 @@
                     if (x < destinationWidth && y < destinationHeight)
                     {
                         destination[y, x] = source[y, x];
+                    }
+                }
+            }
+        }
+
+        public static void InitializeMatrixWithRandomValues( int[,] destination)
+        {
+            
+            int destinationWidth = destination.GetLength(1);
+            int destinationHeight = destination.GetLength(0);
+            Random random = new Random();
+
+            for (int y = 0; y < destinationHeight; y++)
+            {
+                for (int x = 0; x < destinationWidth; x++)
+                {
+                    var number = random.Next(0, 4);
+
+                    bool isLive = number > 2;
+
+                    if (isLive)
+                    {
+                        destination[y, x] =  1;
+                    }
+                    else
+                    {
+                        destination[y, x] = 0;
                     }
                 }
             }
