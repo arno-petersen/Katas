@@ -13,20 +13,66 @@
                    mask[2, 2];
         }
 
+        //Any live cell with two or three live neighbors survives.
+        //Any dead cell with three live neighbors becomes a live cell.
+        //All other live cells die in the next generation.Similarly, all other dead cells stay dead.
+
+        public static int[,] GetNextGeneration(int[,] matrix)
+        {
+
+            int destinationWidth = matrix.GetLength(0);
+            int destinationHeight = matrix.GetLength(1);
+
+            int[,] nextGeneration = new int[destinationHeight, destinationWidth];
+
+            for (int y = 0; y < destinationHeight; y++)
+            {
+                for (int x = 0; x < destinationWidth; x++)
+                {
+                    int[,] mask = CopyToSubArray(matrix, x, y);
+                    int livingNeigbors = CountLivingNeighbors(mask);
+
+                    bool cellIsAlive = matrix[y, x] == 1;
+
+                    if (cellIsAlive && livingNeigbors == 2 || cellIsAlive && livingNeigbors == 3)
+                    {
+                        nextGeneration[y, x] = 1;
+                    }
+                    else
+                    {
+                        if (!cellIsAlive && livingNeigbors == 3 )
+                        {
+                            nextGeneration[y, x] = 1;
+                        }
+                        else
+                        {
+                            nextGeneration[y, x] = 0;
+                        }
+                    }
+                }
+            }
+
+            return nextGeneration;
+        }
+
 
         /// <summary>
         /// Copies the cell's neighbors to a submatrix to determine how many neighbors are alive
         /// </summary>
         /// <param name="source">SourceMatrix</param>
-        /// <param name="destination">Submatrix with all neighbors</param>
         /// <param name="xpos">The cell's x-position</param>
         /// <param name="ypos">the cell's y-position</param>
-        public static void CopyToSubArray(int[,] source, int[,] destination, int xpos, int ypos)
+        public static int[,] CopyToSubArray(int[,] source, int xpos, int ypos)
         {
             // The mask's upper left corner position  is one field above and one field left of the cell's position
             int readOffset = -1;
-            int destinationWidth = destination.GetLength(0);
-            int destinationHeight = destination.GetLength(1);
+            int destinationWidth = 3;
+            int destinationHeight = 3;
+            int sourceWidth = source.GetLength(1);
+            int sourceheight = source.GetLength(0);
+
+
+            int[,] destination = new int[3, 3];
 
 
             for (int y = 0; y < destinationHeight; y++)
@@ -36,17 +82,19 @@
                     int xReadPos = x + xpos + readOffset;
                     int yReadPos = y + ypos + readOffset;
 
-                    if (xReadPos < 0 || xReadPos >= destinationWidth || yReadPos < 0 || yReadPos >= destinationWidth)
+                    if (xReadPos < 0 || xReadPos >= sourceWidth || yReadPos < 0 || yReadPos >= sourceWidth)
                     {
                         destination[y, x] = 0;
                     }
                     else
                     {
-                        destination[y, x] = source[xReadPos, yReadPos];
+                        destination[y, x] = source[ yReadPos, xReadPos];
                     }
 
                 }
             }
+
+            return destination;
         }
 
     }

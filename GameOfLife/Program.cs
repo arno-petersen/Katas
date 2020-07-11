@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using GoL;
 
 namespace GameOfLifeConsole
 {
@@ -6,14 +8,15 @@ namespace GameOfLifeConsole
     {
         static void Main(string[] args)
         {
-            int[,] matrix = new int[8, 8] { { 1, 1, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0, 1, 0, 0 }, { 0, 1, 0, 0, 0, 0, 1, 0 }, { 0, 1, 0, 0, 0, 0, 1, 0 }, { 0, 0, 1, 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 } };
+            //int[,] matrix = new int[8, 8] { { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1,0 , 0, 0, 0 }, { 0, 0, 0, 1, 0, 0, 0, 0 }, { 0, 0, 0, 1, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 } };
+            int[,] matrix = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
 
-            int[,] mask = new int[3, 3];
-
-
-
-
-
+            while (true)
+            {
+                matrix = GameOfLife.GetNextGeneration(matrix);
+                WriteArrayToScreen(matrix);
+                Thread.Sleep(200);
+            }
 
             WriteArrayToScreen(matrix);
 
