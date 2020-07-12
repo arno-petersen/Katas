@@ -1,9 +1,18 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 
 namespace GoL
 {
     public class GameOfLife
     {
+        private static int[,] blinker = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
+        private static int[,] toad = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 0, 1, 1, 1, 0 }, { 0, 1, 1, 1, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
+        private static int[,] beacon = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 0, 0, 0 } };
+        private static int[,] glider = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 1, 0, 1, 0, 0 }, { 0, 0, 1, 1, 0, 0 }, { 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
+
+
+
         /// <summary>
         /// Returns the number of living neighbors
         /// </summary>
@@ -22,8 +31,8 @@ namespace GoL
         public static int[,] GetNextGeneration(int[,] matrix)
         {
 
-            int destinationWidth = matrix.GetLength(0);
-            int destinationHeight = matrix.GetLength(1);
+            int destinationHeight = matrix.GetLength(0);
+            int destinationWidth = matrix.GetLength(1);
 
             int[,] nextGeneration = new int[destinationHeight, destinationWidth];
 
@@ -32,17 +41,17 @@ namespace GoL
                 for (int x = 0; x < destinationWidth; x++)
                 {
                     int[,] mask = CopyToSubMatrix(matrix, x, y);
-                    int livingNeigbors = CountLivingNeighbors(mask);
+                    int livingNeighbors = CountLivingNeighbors(mask);
 
                     bool cellIsAlive = matrix[y, x] == 1;
 
-                    if (cellIsAlive && livingNeigbors == 2 || cellIsAlive && livingNeigbors == 3)
+                    if (cellIsAlive && livingNeighbors == 2 || cellIsAlive && livingNeighbors == 3)
                     {
                         nextGeneration[y, x] = 1;
                     }
                     else
                     {
-                        if (!cellIsAlive && livingNeigbors == 3 )
+                        if (!cellIsAlive && livingNeighbors == 3 )
                         {
                             nextGeneration[y, x] = 1;
                         }
@@ -77,6 +86,28 @@ namespace GoL
                         destination[y, x] = source[y, x];
                     }
                 }
+            }
+        }
+
+        public static void InitializeMatrixWithPattern(int[,] destination, InitPatern pattern )
+        {
+            switch (pattern)
+            {
+                case InitPatern.Beacon:
+                    CopyToMatrix(beacon,destination);
+                    break;
+                case InitPatern.Blinker:
+                    CopyToMatrix(blinker, destination);
+                    break;
+                case InitPatern.Toad:
+                    CopyToMatrix(toad, destination);
+                    break;
+                case InitPatern.Glider:
+                    CopyToMatrix(glider, destination);
+                    break;
+                default:
+                    InitializeMatrixWithRandomValues(destination);
+                    break;
             }
         }
 
@@ -150,5 +181,41 @@ namespace GoL
             return destination;
         }
 
+        public static void DumpGridState(int [,] matrix, string outputFileName)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int y = 0; y < matrix.GetLength(0); y++)
+
+            {
+                for (int x = 0; x < matrix.GetLength(1); x++)
+                {
+                    if (matrix[y, x] == 1)
+                    {
+                        sb.Append("█");
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                }
+
+                sb.AppendLine();
+            }
+
+            using (StreamWriter sw = new StreamWriter(outputFileName))
+            {
+                sw.Write(sb.ToString());
+            }
+        }
+    }
+
+    public enum InitPatern
+    {
+        Blinker = 0,
+        Toad = 1,
+        Beacon = 2,
+        Glider = 3,
+        Random = 4
     }
 }

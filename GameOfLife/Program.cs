@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using GoL;
+using CommandLine;
 
 namespace GameOfLifeConsole
 {
@@ -8,29 +9,72 @@ namespace GameOfLifeConsole
     {
         static void Main(string[] args)
         {
-            int[,] matrix = new int[8, 8];
-            int[,] blinker = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
-            int[,] toad = new int[6, 6] { { 0, 0, 0, 0, 0,0 }, { 0, 0, 0, 0, 0,0 }, { 0, 0, 1, 1, 1,0 }, { 0, 1, 1, 1, 0,0 }, { 0, 0, 0, 0, 0,0 }, { 0, 0, 0, 0, 0, 0 } };
-            int[,] beacon = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 0, 0, 0 } };
-            int[,] glider = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 1, 0, 1, 0, 0 }, { 0, 0, 1, 1, 0, 0 }, { 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
-            
-            GameOfLife.InitializeMatrixwithRandomValues(matrix);
-            //GameOfLife.CopyToMatrix(beacon, matrix);
+            int width = 16;
+            int height = 16;
+            int ticks = -1;
+            int seed = 4;
+            string outputFileName = string.Empty;
+            bool helpCalled = false;
 
-            while (true)
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed<Options>(o =>
+                {
+                    width = o.Width;
+                    height = o.Height;
+                    ticks = o.Ticks;
+                    seed = o.Seed;
+                    outputFileName = o.OutputFileName;
+                })
+                .WithNotParsed<Options>(o =>
+                {
+                   helpCalled = true;
+                });
+
+            if (!helpCalled)
             {
-                matrix = GameOfLife.GetNextGeneration(matrix);
-                WriteArrayToScreen(matrix);
-                Thread.Sleep(200);
+                Console.Clear();
+
+                int[,] matrix = new int[height, width];
+
+                GameOfLife.InitializeMatrixWithPattern(matrix, (InitPatern)seed);
+
+                Console.SetCursorPosition(0,matrix.GetLength(0)+3);
+                Console.WriteLine("Press ESC to stop");
+                Console.WriteLine("To display help screen run 'GameOfLifeConsole --help' ");
+                int generation = 0;
+                do
+                {
+                    while (!Console.KeyAvailable && (ticks < 0 || generation < ticks))
+                    {
+                        matrix = GameOfLife.GetNextGeneration(matrix);
+                        WriteArrayToScreen(matrix);
+                        generation++;
+                        Thread.Sleep(200);
+
+                    }
+
+                    if (generation >= ticks)
+                    {
+                        break;
+                    }
+                } while (Console.ReadKey(true).Key != ConsoleKey.Escape && (ticks < 0 || generation < ticks));
+
+                if (!string.IsNullOrWhiteSpace(outputFileName))
+                {
+                    GameOfLife.DumpGridState(matrix, outputFileName);
+                }
+
+                Console.SetCursorPosition(0, matrix.GetLength(0) + 5);
             }
+
         }
 
         private static void WriteArrayToScreen(int[,] array)
         {
-            for (int y = 0; y < array.GetLength(1); y++)
+            for (int y = 0; y < array.GetLength(0); y++)
 
             {
-                for (int x = 0; x < array.GetLength(0); x++)
+                for (int x = 0; x < array.GetLength(1); x++)
                 {
                     Console.SetCursorPosition(x, y);
 
@@ -48,10 +92,10 @@ namespace GameOfLifeConsole
         }
 
 
-        
 
 
-        
+
+
 
     }
 }
