@@ -14,34 +14,34 @@ namespace GameOfLifeTests
 
             int[,] mask;
 
-            //mask = GoL.GameOfLife.CopyToSubArray(matrix,  0,0);
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix,  0,0);
             int[,] expected = new int[3, 3] { { 0, 0, 0 }, { 0, 1, 1 }, { 0, 1, 1 } };
-            //Assert.AreEqual(expected, mask);
+            Assert.AreEqual(expected, mask);
 
-            //mask = GoL.GameOfLife.CopyToSubArray(matrix,  1, 0);
-            //expected = new int[3, 3] { { 0, 0, 0 }, { 1, 1, 1 }, { 1, 1, 1 } };
-            //Assert.AreEqual(expected, mask);
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 1, 0);
+            expected = new int[3, 3] { { 0, 0, 0 }, { 1, 1, 1 }, { 1, 1, 1 } };
+            Assert.AreEqual(expected, mask);
 
-            //mask = GoL.GameOfLife.CopyToSubArray(matrix,  2, 0);
-            //expected = new int[3, 3] { { 0, 0, 0 }, { 1, 1, 0 }, { 1, 1, 0 } };
-            //Assert.AreEqual(expected, mask);
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 2, 0);
+            expected = new int[3, 3] { { 0, 0, 0 }, { 1, 1, 0 }, { 1, 1, 0 } };
+            Assert.AreEqual(expected, mask);
 
-            //mask = GoL.GameOfLife.CopyToSubArray(matrix,  2, 1);
-            //expected = new int[3, 3] { { 1, 1, 0 }, { 1, 1, 0 }, { 1, 1, 0 } };
-            //Assert.AreEqual(expected, mask);
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 2, 1);
+            expected = new int[3, 3] { { 1, 1, 0 }, { 1, 1, 0 }, { 1, 1, 0 } };
+            Assert.AreEqual(expected, mask);
 
-            //mask = GoL.GameOfLife.CopyToSubArray(matrix, 1, 2);
-            //expected = new int[3, 3] { { 1, 1, 1 }, { 1, 1, 1 }, { 0, 0, 0 } };
-            //Assert.AreEqual(expected, mask);
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 1, 2);
+            expected = new int[3, 3] { { 1, 1, 1 }, { 1, 1, 1 }, { 0, 0, 0 } };
+            Assert.AreEqual(expected, mask);
 
-            //mask = GoL.GameOfLife.CopyToSubArray(matrix, 0, 2);
-            //expected = new int[3, 3] { { 0, 1, 1 }, { 0, 1, 1 }, { 0, 0, 0 } };
-            //Assert.AreEqual(expected, mask);
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 0, 2);
+            expected = new int[3, 3] { { 0, 1, 1 }, { 0, 1, 1 }, { 0, 0, 0 } };
+            Assert.AreEqual(expected, mask);
 
-            //matrix = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
-            //mask = GoL.GameOfLife.CopyToSubArray(matrix, 2, 1);
-            //expected = new int[3, 3] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 1, 0 } };
-            //Assert.AreEqual(expected, mask);
+            matrix = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
+            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 2, 1);
+            expected = new int[3, 3] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 1, 0 } };
+            Assert.AreEqual(expected, mask);
 
             matrix = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
             mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 1, 2);
