@@ -10,9 +10,7 @@ namespace GoL
         private static int[,] toad = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 0, 1, 1, 1, 0 }, { 0, 1, 1, 1, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
         private static int[,] beacon = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 0, 0, 0 } };
         private static int[,] glider = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 1, 0, 1, 0, 0 }, { 0, 0, 1, 1, 0, 0 }, { 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
-
-
-
+        
         /// <summary>
         /// Returns the number of living neighbors
         /// </summary>
@@ -24,10 +22,13 @@ namespace GoL
                    mask[2, 2];
         }
 
-        //Any live cell with two or three live neighbors survives.
-        //Any dead cell with three live neighbors becomes a live cell.
-        //All other live cells die in the next generation.Similarly, all other dead cells stay dead.
-
+        /// <summary>
+        /// Generates the next generation matrix
+        /// Any live cell with two or three live neighbors survives.
+        /// Any dead cell with three live neighbors becomes a live cell.
+        /// All other live cells die in the next generation.Similarly, all other dead cells stay dead./// </summary>
+        /// <param name="matrix">matrix with the state of the current generation</param>
+        /// <returns>matrix with the state of the next generation</returns>
         public static int[,] GetNextGeneration(int[,] matrix)
         {
 
@@ -65,9 +66,12 @@ namespace GoL
 
             return nextGeneration;
         }
-
-
-
+        
+        /// <summary>
+        /// Copies the content from one matrix to another matrix
+        /// </summary>
+        /// <param name="source">Source matrix</param>
+        /// <param name="destination">destination matrix</param>
         public static void CopyToMatrix(int[,] source, int[,] destination)
         {
             int sourceWidth = source.GetLength(1);
@@ -89,20 +93,26 @@ namespace GoL
             }
         }
 
-        public static void InitializeMatrixWithPattern(int[,] destination, InitPatern pattern )
+
+        /// <summary>
+        /// Initializes the matrix with pattern data or with random data
+        /// </summary>
+        /// <param name="destination">Destination matrix</param>
+        /// <param name="pattern">Pattern name</param>
+        public static void InitializeMatrixWithPattern(int[,] destination, InitPattern pattern )
         {
             switch (pattern)
             {
-                case InitPatern.Beacon:
+                case InitPattern.Beacon:
                     CopyToMatrix(beacon,destination);
                     break;
-                case InitPatern.Blinker:
+                case InitPattern.Blinker:
                     CopyToMatrix(blinker, destination);
                     break;
-                case InitPatern.Toad:
+                case InitPattern.Toad:
                     CopyToMatrix(toad, destination);
                     break;
-                case InitPatern.Glider:
+                case InitPattern.Glider:
                     CopyToMatrix(glider, destination);
                     break;
                 default:
@@ -111,6 +121,10 @@ namespace GoL
             }
         }
 
+        /// <summary>
+        /// Initializes the matrix with random values
+        /// </summary>
+        /// <param name="destination">Destination matrix</param>
         public static void InitializeMatrixWithRandomValues( int[,] destination)
         {
             
@@ -181,6 +195,11 @@ namespace GoL
             return destination;
         }
 
+        /// <summary>
+        /// Dumps the current matrix state into a file
+        /// </summary>
+        /// <param name="matrix">matrix with the Game of Life state</param>
+        /// <param name="outputFileName">Filename of the output file</param>
         public static void DumpGridState(int [,] matrix, string outputFileName)
         {
             StringBuilder sb = new StringBuilder();
@@ -208,14 +227,5 @@ namespace GoL
                 sw.Write(sb.ToString());
             }
         }
-    }
-
-    public enum InitPatern
-    {
-        Blinker = 0,
-        Toad = 1,
-        Beacon = 2,
-        Glider = 3,
-        Random = 4
     }
 }

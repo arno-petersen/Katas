@@ -36,11 +36,12 @@ namespace GameOfLifeConsole
 
                 int[,] matrix = new int[height, width];
 
-                GameOfLife.InitializeMatrixWithPattern(matrix, (InitPatern)seed);
+                GameOfLife.InitializeMatrixWithPattern(matrix, (InitPattern)seed);
 
                 Console.SetCursorPosition(0,matrix.GetLength(0)+3);
                 Console.WriteLine("Press ESC to stop");
                 Console.WriteLine("To display help screen run 'GameOfLifeConsole --help' ");
+                
                 int generation = 0;
                 do
                 {
@@ -90,12 +91,5 @@ namespace GameOfLifeConsole
                 }
             }
         }
-
-
-
-
-
-
-
     }
 }
