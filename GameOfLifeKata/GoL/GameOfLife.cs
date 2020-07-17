@@ -4,6 +4,10 @@ using System.Text;
 
 namespace GoL
 {
+    /// <summary>
+    /// Humble implementation of Conway's Game of Life
+    /// https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+    /// </summary>
     public class GameOfLife
     {
         private static int[,] blinker = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
