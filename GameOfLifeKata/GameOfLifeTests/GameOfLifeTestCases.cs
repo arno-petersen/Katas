@@ -52,6 +52,43 @@ namespace GameOfLifeTests
         }
 
         [Test]
+        public void GameOfLifeMatrixShouldReturnNumberOfLivingNeighbors()
+        {
+            int[,] pattern = new int[4, 5] { { 1, 1, 1,1,1 }, { 1, 1, 1,1,1 }, { 1, 1, 1,1,1 }, { 1, 1, 1, 1, 1 } };
+
+            IGameOfLifeMatrix matrix = new GameOfLifeMultiArray(5,4);
+            GameOfLife.InitializeGameOfLife(matrix,pattern);
+
+            Assert.AreEqual(3,matrix.CountLivingNeighbors(0,0));
+            Assert.AreEqual(3, matrix.CountLivingNeighbors(4, 3));
+            Assert.AreEqual(3, matrix.CountLivingNeighbors(0, 3));
+            Assert.AreEqual(3, matrix.CountLivingNeighbors(4, 0));
+
+            for (int i = 1; i < 4; i++){
+                Assert.AreEqual(5, matrix.CountLivingNeighbors(i,0 ));
+                Assert.AreEqual(5, matrix.CountLivingNeighbors(i, 3));
+
+            }
+
+            for (int i = 1; i < 3; i++)
+            {
+                Assert.AreEqual(5, matrix.CountLivingNeighbors(0, i));
+                Assert.AreEqual(5, matrix.CountLivingNeighbors(4, i));
+            }
+
+            for (int y = 1; y < 3; y++)
+            {
+                for (int x = 1; x < 4; x++)
+                {
+                    Assert.AreEqual(8, matrix.CountLivingNeighbors(x, y));
+                }
+            }
+
+
+
+        }
+
+        [Test]
         public void GetNextGenerationShouldReturnTheNextGeneration()
         {
             int[,] matrix = new int[5,5] {{0,0,0,0,0}, { 0, 0, 1, 0, 0 } , { 0, 0, 1, 0, 0 } , { 0, 0, 1, 0, 0 } , { 0, 0, 0, 0, 0 } };
@@ -109,13 +146,7 @@ namespace GameOfLifeTests
 
             int[,] blinker = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
 
-            for (int y = 0; y < 5; y++)
-            {
-                for (int x = 0; x < 5; x++)
-                {
-                    matrix.SetCellState(x, y, blinker[y,x] == 1);
-                }
-            }
+            GameOfLife.InitializeGameOfLife(matrix,blinker);
 
 
             for (int y = 0; y < 5; y++)

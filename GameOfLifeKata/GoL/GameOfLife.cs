@@ -233,12 +233,25 @@ namespace GoL
                 sw.Write(sb.ToString());
             }
         }
+
+        internal static void InitializeGameOfLife(IGameOfLifeMatrix matrix, int[,] pattern)
+        {
+            for (int y = 0; y < pattern.GetLength(0); y++)
+            {
+                for (int x = 0; x < pattern.GetLength(1); x++)
+                {
+                    matrix.SetCellState(x, y, pattern[y, x] == 1);
+                }
+            }
+        }
     }
 
     internal interface IGameOfLifeMatrix
     {
         bool IsCellAlive(int x, int y);
         void SetCellState(int x, int y, bool isAlive);
+
+        int CountLivingNeighbors(int x, int y);
     }
 
     internal class GameOfLifeMultiArray : IGameOfLifeMatrix
@@ -256,6 +269,11 @@ namespace GoL
 
         public void SetCellState(int x, int y, bool isAlive)
         {
+            if (x < 0 || x >= matrix.GetLength(1) || y <0 || y>= matrix.GetLength(0))
+            {
+                return;
+            }
+
             if (isAlive)
             {
                 matrix[y, x] = 1;
@@ -264,6 +282,38 @@ namespace GoL
             {
                 matrix[y, 1] = 0;
             }
+        }
+
+        public int CountLivingNeighbors(int x, int y)
+        {
+            int width = matrix.GetLength(1);
+            int heigth = matrix.GetLength(0);
+
+            int livingNeighbors = 0;
+
+            for (int ypos = y-1; ypos <= y+1; ypos++)
+            {
+                for (int xpos = x-1; xpos <= x+1; xpos++)
+                {
+                    // don't count the requested cell 
+                    if (xpos == x && ypos == y)
+                    {
+                        continue;
+                    }
+
+                    if (xpos >= 0 && xpos < width && ypos >= 0 && ypos < heigth  )
+                    {
+                        if (matrix[ypos,xpos] == 1)
+                        {
+                            livingNeighbors++;
+                        }
+
+                    }
+                }
+            }
+
+
+            return livingNeighbors;
         }
     }
 }
