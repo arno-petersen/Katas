@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-
+[assembly: InternalsVisibleTo("GameOfLifeTests")]
 namespace GoL
 {
     /// <summary>
@@ -229,6 +231,38 @@ namespace GoL
             using (StreamWriter sw = new StreamWriter(outputFileName))
             {
                 sw.Write(sb.ToString());
+            }
+        }
+    }
+
+    internal interface IGameOfLifeMatrix
+    {
+        bool IsCellAlive(int x, int y);
+        void SetCellState(int x, int y, bool isAlive);
+    }
+
+    internal class GameOfLifeMultiArray : IGameOfLifeMatrix
+    {
+        private int[,] matrix;
+
+        public GameOfLifeMultiArray(int width, int height)
+        {
+            this.matrix = new int[height,width];
+        }
+        public bool IsCellAlive(int x, int y)
+        {
+            return matrix[y, x] == 1;
+        }
+
+        public void SetCellState(int x, int y, bool isAlive)
+        {
+            if (isAlive)
+            {
+                matrix[y, x] = 1;
+            }
+            else
+            {
+                matrix[y, 1] = 0;
             }
         }
     }
