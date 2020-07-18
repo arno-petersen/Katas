@@ -34,11 +34,12 @@ namespace GameOfLifeConsole
             {
                 Console.Clear();
 
-                int[,] matrix = new int[height, width];
+                var gameOfLife = new GameOfLife();
 
-                GameOfLife.InitializeMatrixWithPattern(matrix, (InitPattern)seed);
 
-                Console.SetCursorPosition(0,matrix.GetLength(0)+3);
+                gameOfLife.InitializeMatrixWithPattern(width, height, (InitPattern)seed);
+
+                Console.SetCursorPosition(0,height+3);
                 Console.WriteLine("Press ESC to stop");
                 Console.WriteLine("To display help screen run 'GameOfLifeConsole --help' ");
                 
@@ -47,8 +48,8 @@ namespace GameOfLifeConsole
                 {
                     while (!Console.KeyAvailable && (ticks < 0 || generation < ticks))
                     {
-                        matrix = GameOfLife.GetNextGeneration(matrix);
-                        WriteArrayToScreen(matrix);
+                        gameOfLife.GetNextGeneration();
+                        WriteArrayToScreen(gameOfLife.GameOfLifeMatrix);
                         generation++;
                         Thread.Sleep(200);
 
@@ -62,25 +63,25 @@ namespace GameOfLifeConsole
 
                 if (!string.IsNullOrWhiteSpace(outputFileName))
                 {
-                    GameOfLife.DumpGridState(matrix, outputFileName);
+                    gameOfLife.DumpGridState(outputFileName);
                 }
 
-                Console.SetCursorPosition(0, matrix.GetLength(0) + 5);
+                Console.SetCursorPosition(0, height + 5);
             }
 
         }
 
-        private static void WriteArrayToScreen(int[,] array)
+        private static void WriteArrayToScreen(IGameOfLifeMatrix matrix)
         {
-            for (int y = 0; y < array.GetLength(0); y++)
+            for (int y = 0; y < matrix.Heigth; y++)
 
             {
-                for (int x = 0; x < array.GetLength(1); x++)
+                for (int x = 0; x < matrix.Width; x++)
                 {
                     Console.SetCursorPosition(x, y);
 
 
-                    if (array[y, x] == 1)
+                    if (matrix.IsCellAlive(x,y))
                     {
                         Console.Write("█");
                     }

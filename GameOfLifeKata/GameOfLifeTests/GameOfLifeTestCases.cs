@@ -94,7 +94,18 @@ namespace GameOfLifeTests
             int[,] matrix = new int[5,5] {{0,0,0,0,0}, { 0, 0, 1, 0, 0 } , { 0, 0, 1, 0, 0 } , { 0, 0, 1, 0, 0 } , { 0, 0, 0, 0, 0 } };
             int[,] expected = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 1, 1, 1, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 } };
 
-            Assert.AreEqual(expected,GameOfLife.GetNextGeneration(matrix));
+            var gameOfLive = new GameOfLife();
+            gameOfLive.InitializeMatrixWithPattern(5,5,InitPattern.Blinker);
+            gameOfLive.GetNextGeneration();
+
+            for (int y = 0; y < 5; y++)
+            {
+                for (int x = 0; x < 5; x++)
+                {
+                    Assert.AreEqual(expected[y,x] == 1,gameOfLive.GameOfLifeMatrix.IsCellAlive(x,y), $"Cell {x},{y}");
+                }
+            }
+            
 
         }
 

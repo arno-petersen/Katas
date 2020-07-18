@@ -15,6 +15,8 @@ namespace GoL
         private static int[,] toad = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 0, 1, 1, 1, 0 }, { 0, 1, 1, 1, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
         private static int[,] beacon = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 1, 1, 0, 0, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 1, 1, 0 }, { 0, 0, 0, 0, 0, 0 } };
         private static int[,] glider = new int[6, 6] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 0, 1, 0, 1, 0, 0 }, { 0, 0, 1, 1, 0, 0 }, { 0, 0, 1, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 } };
+
+        public IGameOfLifeMatrix GameOfLifeMatrix { get; private set; }
         
         /// <summary>
         /// Returns the number of living neighbors
@@ -34,130 +36,94 @@ namespace GoL
         /// All other live cells die in the next generation.Similarly, all other dead cells stay dead./// </summary>
         /// <param name="matrix">matrix with the state of the current generation</param>
         /// <returns>matrix with the state of the next generation</returns>
-        public static int[,] GetNextGeneration(int[,] matrix)
+        public void GetNextGeneration()
         {
+            IGameOfLifeMatrix nextGeneration = new GameOfLifeMultiArray(this.GameOfLifeMatrix.Width, this.GameOfLifeMatrix.Heigth);
 
-            int destinationHeight = matrix.GetLength(0);
-            int destinationWidth = matrix.GetLength(1);
-
-            int[,] nextGeneration = new int[destinationHeight, destinationWidth];
-
-            for (int y = 0; y < destinationHeight; y++)
+            for (int y = 0; y < this.GameOfLifeMatrix.Heigth; y++)
             {
-                for (int x = 0; x < destinationWidth; x++)
+                for (int x = 0; x < this.GameOfLifeMatrix.Width; x++)
                 {
-                    int[,] mask = CopyToSubMatrix(matrix, x, y);
-                    int livingNeighbors = CountLivingNeighbors(mask);
+                    
+                    int livingNeighbors = this.GameOfLifeMatrix.CountLivingNeighbors(x,y);
 
-                    bool cellIsAlive = matrix[y, x] == 1;
+                    
 
-                    if (cellIsAlive && livingNeighbors == 2 || cellIsAlive && livingNeighbors == 3)
+                    if (this.GameOfLifeMatrix.IsCellAlive(x,y) && livingNeighbors == 2 || this.GameOfLifeMatrix.IsCellAlive(x, y) && livingNeighbors == 3)
                     {
-                        nextGeneration[y, x] = 1;
+                        nextGeneration.SetCellState(x,y,true);
                     }
                     else
                     {
-                        if (!cellIsAlive && livingNeighbors == 3 )
+                        if (!this.GameOfLifeMatrix.IsCellAlive(x, y) && livingNeighbors == 3)
                         {
-                            nextGeneration[y, x] = 1;
+                            nextGeneration.SetCellState(x,y,true);
                         }
                         else
                         {
-                            nextGeneration[y, x] = 0;
+                            nextGeneration.SetCellState(x, y, false);
                         }
                     }
                 }
             }
 
-            return nextGeneration;
+            this.GameOfLifeMatrix = nextGeneration;
         }
-        
-        /// <summary>
-        /// Copies the content from one matrix to another matrix
-        /// </summary>
-        /// <param name="source">Source matrix</param>
-        /// <param name="destination">destination matrix</param>
-        public static void CopyToMatrix(int[,] source, int[,] destination)
-        {
-            int sourceWidth = source.GetLength(1);
-            int sourceHeight = source.GetLength(0);
-
-            int destinationWidth = destination.GetLength(1);
-            int destinationHeight = destination.GetLength(0);
-
-
-            for (int y = 0; y < sourceHeight; y++)
-            {
-                for (int x = 0; x < sourceWidth; x++)
-                {
-                    if (x < destinationWidth && y < destinationHeight)
-                    {
-                        destination[y, x] = source[y, x];
-                    }
-                }
-            }
-        }
-
 
         /// <summary>
         /// Initializes the matrix with pattern data or with random data
         /// </summary>
         /// <param name="destination">Destination matrix</param>
         /// <param name="pattern">Pattern name</param>
-        public static void InitializeMatrixWithPattern(int[,] destination, InitPattern pattern )
+        public void InitializeMatrixWithPattern(int width, int height, InitPattern pattern)
         {
+
+            this.GameOfLifeMatrix = new GameOfLifeMultiArray(width, height);
+
             switch (pattern)
             {
                 case InitPattern.Beacon:
-                    CopyToMatrix(beacon,destination);
+                    InitializeGameOfLife(this.GameOfLifeMatrix, beacon);
                     break;
                 case InitPattern.Blinker:
-                    CopyToMatrix(blinker, destination);
+                    InitializeGameOfLife(this.GameOfLifeMatrix, blinker);
                     break;
                 case InitPattern.Toad:
-                    CopyToMatrix(toad, destination);
+                    InitializeGameOfLife(this.GameOfLifeMatrix, toad);
                     break;
                 case InitPattern.Glider:
-                    CopyToMatrix(glider, destination);
+                    InitializeGameOfLife(this.GameOfLifeMatrix, glider);
                     break;
                 default:
-                    InitializeMatrixWithRandomValues(destination);
+                    InitializeMatrixWithRandomValues();
                     break;
             }
         }
 
+
+        
+
         /// <summary>
         /// Initializes the matrix with random values
         /// </summary>
-        /// <param name="destination">Destination matrix</param>
-        public static void InitializeMatrixWithRandomValues( int[,] destination)
+        internal void InitializeMatrixWithRandomValues()
         {
-            
-            int destinationWidth = destination.GetLength(1);
-            int destinationHeight = destination.GetLength(0);
             Random random = new Random();
 
-            for (int y = 0; y < destinationHeight; y++)
+            for (int y = 0; y < this.GameOfLifeMatrix.Heigth; y++)
             {
-                for (int x = 0; x < destinationWidth; x++)
+                for (int x = 0; x < this.GameOfLifeMatrix.Width; x++)
                 {
                     var number = random.Next(0, 4);
 
                     bool isLive = number > 2;
 
-                    if (isLive)
-                    {
-                        destination[y, x] =  1;
-                    }
-                    else
-                    {
-                        destination[y, x] = 0;
-                    }
+                    this.GameOfLifeMatrix.SetCellState(x,y,isLive);
                 }
             }
 
         }
-
+        
 
         /// <summary>
         /// Copies the cell's neighbors to a submatrix to determine how many neighbors are alive
@@ -203,18 +169,17 @@ namespace GoL
         /// <summary>
         /// Dumps the current matrix state into a file
         /// </summary>
-        /// <param name="matrix">matrix with the Game of Life state</param>
         /// <param name="outputFileName">Filename of the output file</param>
-        public static void DumpGridState(int [,] matrix, string outputFileName)
+        public void DumpGridState(string outputFileName)
         {
             StringBuilder sb = new StringBuilder();
 
-            for (int y = 0; y < matrix.GetLength(0); y++)
+            for (int y = 0; y < this.GameOfLifeMatrix.Heigth; y++)
 
             {
-                for (int x = 0; x < matrix.GetLength(1); x++)
+                for (int x = 0; x < this.GameOfLifeMatrix.Width; x++)
                 {
-                    if (matrix[y, x] == 1)
+                    if (this.GameOfLifeMatrix.IsCellAlive(x,y))
                     {
                         sb.Append("█");
                     }
@@ -245,8 +210,12 @@ namespace GoL
         }
     }
 
-    internal interface IGameOfLifeMatrix
+    public interface IGameOfLifeMatrix
     {
+
+        int Width { get; }
+
+        int Heigth { get; }
         bool IsCellAlive(int x, int y);
         void SetCellState(int x, int y, bool isAlive);
 
@@ -261,6 +230,12 @@ namespace GoL
         {
             this.matrix = new int[height,width];
         }
+
+
+        public int Width => this.matrix.GetLength(1);
+
+        public int Heigth => this.matrix.GetLength(0);
+
         public bool IsCellAlive(int x, int y)
         {
             return matrix[y, x] == 1;
@@ -279,7 +254,7 @@ namespace GoL
             }
             else
             {
-                matrix[y, 1] = 0;
+                matrix[y, x] = 0;
             }
         }
 
