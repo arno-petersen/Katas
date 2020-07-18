@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -199,7 +200,7 @@ namespace GoL
         
         public int Height { get; internal set; }
 
-        private Dictionary<int[], bool> cells = new Dictionary<int[], bool>();
+        private Dictionary<Point, bool> cells = new Dictionary<Point, bool>();
 
         
 
@@ -215,11 +216,11 @@ namespace GoL
 
         public bool IsCellAlive(int x, int y)
         {
-            var position = new int[] { x, y };
+            var position = new Point(x,y);
 
             if (cells.ContainsKey(position))
             {
-                return this.cells[new[] {x, y}];
+                return this.cells[position];
             }
 
 
@@ -228,7 +229,7 @@ namespace GoL
 
         public void SetCellState(int x, int y, bool isAlive)
         {
-            var position = new int[] {x, y};
+            var position = new Point(x,y);
 
             if (cells.ContainsKey(position))
             {
