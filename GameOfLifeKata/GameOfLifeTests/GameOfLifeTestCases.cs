@@ -7,49 +7,6 @@ namespace GameOfLifeTests
     [TestFixture]
     public class GameOfLifeTestCases
     {
-        [Test]
-        public void CopySubMatrixShouldCopyAllNeighbors()
-        {
-            int[,] matrix = new int[3, 3] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
-
-
-            int[,] mask;
-
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix,  0,0);
-            int[,] expected = new int[3, 3] { { 0, 0, 0 }, { 0, 1, 1 }, { 0, 1, 1 } };
-            Assert.AreEqual(expected, mask);
-
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 1, 0);
-            expected = new int[3, 3] { { 0, 0, 0 }, { 1, 1, 1 }, { 1, 1, 1 } };
-            Assert.AreEqual(expected, mask);
-
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 2, 0);
-            expected = new int[3, 3] { { 0, 0, 0 }, { 1, 1, 0 }, { 1, 1, 0 } };
-            Assert.AreEqual(expected, mask);
-
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 2, 1);
-            expected = new int[3, 3] { { 1, 1, 0 }, { 1, 1, 0 }, { 1, 1, 0 } };
-            Assert.AreEqual(expected, mask);
-
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 1, 2);
-            expected = new int[3, 3] { { 1, 1, 1 }, { 1, 1, 1 }, { 0, 0, 0 } };
-            Assert.AreEqual(expected, mask);
-
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 0, 2);
-            expected = new int[3, 3] { { 0, 1, 1 }, { 0, 1, 1 }, { 0, 0, 0 } };
-            Assert.AreEqual(expected, mask);
-
-            matrix = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 2, 1);
-            expected = new int[3, 3] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 1, 0 } };
-            Assert.AreEqual(expected, mask);
-
-            matrix = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
-            mask = GoL.GameOfLife.CopyToSubMatrix(matrix, 1, 2);
-            expected = new int[3, 3] { { 0, 0, 1 }, { 0, 0, 1 }, { 0, 0, 1 } };
-            Assert.AreEqual(expected, mask);
-
-        }
 
         [Test]
         public void GameOfLifeMatrixShouldReturnNumberOfLivingNeighbors()
@@ -165,6 +122,28 @@ namespace GameOfLifeTests
                 for (int x = 0; x < 5; x++)
                 {
                     Assert.AreEqual(blinker[y,x] ==1,  matrix.IsCellAlive(x,y), $"Test of cell {x},{y}");
+                }
+            }
+
+
+
+        }
+
+        [Test]
+        public void GoLDictionaryContainInitialzationData()
+        {
+            IGameOfLifeMatrix matrix = new GameOfLifeDictionary(6, 6);
+
+            int[,] blinker = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
+
+            GameOfLife.InitializeGameOfLife(matrix, blinker);
+
+
+            for (int y = 0; y < 5; y++)
+            {
+                for (int x = 0; x < 5; x++)
+                {
+                    Assert.AreEqual(blinker[y, x] == 1, matrix.IsCellAlive(x, y), $"Test of cell {x},{y}");
                 }
             }
 

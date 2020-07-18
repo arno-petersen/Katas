@@ -73,7 +73,7 @@ namespace GameOfLifeConsole
 
         private static void WriteArrayToScreen(IGameOfLifeMatrix matrix)
         {
-            for (int y = 0; y < matrix.Heigth; y++)
+            for (int y = 0; y < matrix.Height; y++)
 
             {
                 for (int x = 0; x < matrix.Width; x++)

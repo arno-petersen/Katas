@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -38,9 +39,9 @@ namespace GoL
         /// <returns>matrix with the state of the next generation</returns>
         public void GetNextGeneration()
         {
-            IGameOfLifeMatrix nextGeneration = new GameOfLifeMultiArray(this.GameOfLifeMatrix.Width, this.GameOfLifeMatrix.Heigth);
+            var nextGeneration = CreateGameOfLifeMatrix(this.GameOfLifeMatrix.Width, this.GameOfLifeMatrix.Height);
 
-            for (int y = 0; y < this.GameOfLifeMatrix.Heigth; y++)
+            for (int y = 0; y < this.GameOfLifeMatrix.Height; y++)
             {
                 for (int x = 0; x < this.GameOfLifeMatrix.Width; x++)
                 {
@@ -70,6 +71,13 @@ namespace GoL
             this.GameOfLifeMatrix = nextGeneration;
         }
 
+        private IGameOfLifeMatrix CreateGameOfLifeMatrix(int width, int height)
+        {
+            IGameOfLifeMatrix nextGeneration =
+                new GameOfLifeMultiArray(width, height);
+            return nextGeneration;
+        }
+
         /// <summary>
         /// Initializes the matrix with pattern data or with random data
         /// </summary>
@@ -78,7 +86,7 @@ namespace GoL
         public void InitializeMatrixWithPattern(int width, int height, InitPattern pattern)
         {
 
-            this.GameOfLifeMatrix = new GameOfLifeMultiArray(width, height);
+            this.GameOfLifeMatrix = CreateGameOfLifeMatrix(width, height);
 
             switch (pattern)
             {
@@ -110,7 +118,7 @@ namespace GoL
         {
             Random random = new Random();
 
-            for (int y = 0; y < this.GameOfLifeMatrix.Heigth; y++)
+            for (int y = 0; y < this.GameOfLifeMatrix.Height; y++)
             {
                 for (int x = 0; x < this.GameOfLifeMatrix.Width; x++)
                 {
@@ -125,46 +133,7 @@ namespace GoL
         }
         
 
-        /// <summary>
-        /// Copies the cell's neighbors to a submatrix to determine how many neighbors are alive
-        /// </summary>
-        /// <param name="source">SourceMatrix</param>
-        /// <param name="xpos">The cell's x-position</param>
-        /// <param name="ypos">the cell's y-position</param>
-        public static int[,] CopyToSubMatrix(int[,] source, int xpos, int ypos)
-        {
-            // The mask's upper left corner position  is one field above and one field left of the cell's position
-            int readOffset = -1;
-            int destinationWidth = 3;
-            int destinationHeight = 3;
-            int sourceWidth = source.GetLength(1);
-            int sourceHeight = source.GetLength(0);
-
-
-            int[,] destination = new int[3, 3];
-
-
-            for (int y = 0; y < destinationHeight; y++)
-            {
-                for (int x = 0; x < destinationWidth; x++)
-                {
-                    int xReadPos = x + xpos + readOffset;
-                    int yReadPos = y + ypos + readOffset;
-
-                    if (xReadPos < 0 || xReadPos >= sourceWidth || yReadPos < 0 || yReadPos >= sourceHeight)
-                    {
-                        destination[y, x] = 0;
-                    }
-                    else
-                    {
-                        destination[y, x] = source[ yReadPos, xReadPos];
-                    }
-
-                }
-            }
-
-            return destination;
-        }
+        
 
         /// <summary>
         /// Dumps the current matrix state into a file
@@ -174,7 +143,7 @@ namespace GoL
         {
             StringBuilder sb = new StringBuilder();
 
-            for (int y = 0; y < this.GameOfLifeMatrix.Heigth; y++)
+            for (int y = 0; y < this.GameOfLifeMatrix.Height; y++)
 
             {
                 for (int x = 0; x < this.GameOfLifeMatrix.Width; x++)
@@ -215,12 +184,78 @@ namespace GoL
 
         int Width { get; }
 
-        int Heigth { get; }
+        int Height { get; }
         bool IsCellAlive(int x, int y);
         void SetCellState(int x, int y, bool isAlive);
 
         int CountLivingNeighbors(int x, int y);
     }
+
+    
+
+    internal class GameOfLifeDictionary : IGameOfLifeMatrix
+    {
+        public int Width { get; internal set; }
+        
+        public int Height { get; internal set; }
+
+        private Dictionary<int[], bool> cells = new Dictionary<int[], bool>();
+
+        
+
+
+        public GameOfLifeDictionary(int width, int height)
+        {
+            Width = width;
+            Height = height;
+
+
+        }
+
+
+        public bool IsCellAlive(int x, int y)
+        {
+            var position = new int[] { x, y };
+
+            if (cells.ContainsKey(position))
+            {
+                return this.cells[new[] {x, y}];
+            }
+
+
+            return false;
+        }
+
+        public void SetCellState(int x, int y, bool isAlive)
+        {
+            var position = new int[] {x, y};
+
+            if (cells.ContainsKey(position))
+            {
+                if (isAlive)
+                {
+                    cells[position] = true;
+                }
+                else
+                {
+                    cells.Remove(position);
+                }
+            }
+            else
+            {
+                if (isAlive)
+                {
+                    cells.Add(position,true);
+                }
+            }
+        }
+
+        public int CountLivingNeighbors(int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
     internal class GameOfLifeMultiArray : IGameOfLifeMatrix
     {
@@ -234,7 +269,7 @@ namespace GoL
 
         public int Width => this.matrix.GetLength(1);
 
-        public int Heigth => this.matrix.GetLength(0);
+        public int Height => this.matrix.GetLength(0);
 
         public bool IsCellAlive(int x, int y)
         {
