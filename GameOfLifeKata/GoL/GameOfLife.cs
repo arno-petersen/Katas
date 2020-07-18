@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 [assembly: InternalsVisibleTo("GameOfLifeTests")]
 namespace GoL
