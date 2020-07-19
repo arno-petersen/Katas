@@ -8,4 +8,11 @@
         Glider = 3,
         Random = 4
     }
+
+    public enum MatrixType
+    {
+        MultiArray,
+        HashSet
+        
+    }
 }

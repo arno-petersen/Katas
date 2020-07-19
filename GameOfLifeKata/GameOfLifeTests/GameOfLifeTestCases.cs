@@ -20,7 +20,7 @@ namespace GameOfLifeTests
 
 
             // Test the dictionary version
-            matrix = new GameOfLifeDictionary(5,4);
+            matrix = new GameOfLifeHashSet(5,4);
             GameOfLife.InitializeGameOfLife(matrix, pattern);
             CheckForLivingNeighbors(matrix);
 
@@ -101,7 +101,7 @@ namespace GameOfLifeTests
         [Test]
         public void GoLDictionaryContainInitialzationData()
         {
-            IGameOfLifeMatrix matrix = new GameOfLifeDictionary(6, 6);
+            IGameOfLifeMatrix matrix = new GameOfLifeHashSet(6, 6);
 
             int[,] blinker = new int[5, 5] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 0 } };
 

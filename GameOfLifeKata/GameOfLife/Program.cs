@@ -36,8 +36,7 @@ namespace GameOfLifeConsole
 
                 var gameOfLife = new GameOfLife();
 
-
-                gameOfLife.InitializeMatrixWithPattern(width, height, (InitPattern)seed);
+                gameOfLife.InitializeMatrixWithPattern(width, height, (InitPattern)seed, MatrixType.HashSet);
 
                 Console.SetCursorPosition(0,height+3);
                 Console.WriteLine("Press ESC to stop");

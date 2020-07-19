@@ -31,7 +31,7 @@ namespace GoL
         /// <returns>matrix with the state of the next generation</returns>
         public void GetNextGeneration()
         {
-            var nextGeneration = CreateGameOfLifeMatrix(this.GameOfLifeMatrix.Width, this.GameOfLifeMatrix.Height);
+            var nextGeneration = CreateGameOfLifeMatrix(this.GameOfLifeMatrix.Width, this.GameOfLifeMatrix.Height, MatrixType.HashSet);
 
             for (int y = 0; y < this.GameOfLifeMatrix.Height; y++)
             {
@@ -63,11 +63,23 @@ namespace GoL
             this.GameOfLifeMatrix = nextGeneration;
         }
 
-        private IGameOfLifeMatrix CreateGameOfLifeMatrix(int width, int height)
+        private IGameOfLifeMatrix CreateGameOfLifeMatrix(int width, int height, MatrixType matrixType)
         {
-            IGameOfLifeMatrix nextGeneration =
-                new GameOfLifeMultiArray(width, height);
-            return nextGeneration;
+            IGameOfLifeMatrix matrix;
+
+            switch (matrixType)
+            {
+                case MatrixType.HashSet:
+                    matrix =
+                        new GameOfLifeHashSet(width, height);
+                    break;
+                default:
+                    matrix =
+                        new GameOfLifeMultiArray(width, height);
+                    break;
+            }
+            
+            return matrix;
         }
 
         /// <summary>
@@ -75,10 +87,10 @@ namespace GoL
         /// </summary>
         /// <param name="destination">Destination matrix</param>
         /// <param name="pattern">Pattern name</param>
-        public void InitializeMatrixWithPattern(int width, int height, InitPattern pattern)
+        /// <param name="matrixType">The matrix type that shoud be used </param>
+        public void InitializeMatrixWithPattern(int width, int height, InitPattern pattern, MatrixType matrixType = MatrixType.MultiArray)
         {
-
-            this.GameOfLifeMatrix = CreateGameOfLifeMatrix(width, height);
+            this.GameOfLifeMatrix = CreateGameOfLifeMatrix(width, height, matrixType);
 
             switch (pattern)
             {
@@ -185,13 +197,13 @@ namespace GoL
 
     
 
-    internal class GameOfLifeDictionary : IGameOfLifeMatrix
+    internal class GameOfLifeHashSet : IGameOfLifeMatrix
     {
         public int Width { get; internal set; }
         
         public int Height { get; internal set; }
 
-        private Dictionary<Point, bool> cells = new Dictionary<Point, bool>();
+        private HashSet<Point> cells = new HashSet<Point>();
 
         private Size[] neighborPositions = new Size[]
         {
@@ -202,7 +214,7 @@ namespace GoL
         
 
 
-        public GameOfLifeDictionary(int width, int height)
+        public GameOfLifeHashSet(int width, int height)
         {
             Width = width;
             Height = height;
@@ -215,9 +227,9 @@ namespace GoL
         {
             var position = new Point(x,y);
 
-            if (cells.ContainsKey(position))
+            if (cells.Contains(position))
             {
-                return this.cells[position];
+                return true;
             }
 
 
@@ -228,13 +240,9 @@ namespace GoL
         {
             var position = new Point(x,y);
 
-            if (cells.ContainsKey(position))
+            if (cells.Contains(position))
             {
-                if (isAlive)
-                {
-                    cells[position] = true;
-                }
-                else
+                if (!isAlive)
                 {
                     cells.Remove(position);
                 }
@@ -243,7 +251,7 @@ namespace GoL
             {
                 if (isAlive)
                 {
-                    cells.Add(position,true);
+                    cells.Add(position);
                 }
             }
         }
@@ -255,7 +263,7 @@ namespace GoL
             foreach (var neighborPosition in neighborPositions)
             {
                 var neighborCell = Point.Add(new Point(x, y),neighborPosition)  ;
-                if (cells.ContainsKey(neighborCell))
+                if (cells.Contains(neighborCell))
                 {
                     livingNeighbors++;
                 }
