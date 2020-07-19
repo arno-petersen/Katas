@@ -20,16 +20,7 @@ namespace GoL
 
         public IGameOfLifeMatrix GameOfLifeMatrix { get; private set; }
         
-        /// <summary>
-        /// Returns the number of living neighbors
-        /// </summary>
-        /// <param name="mask">mask with the cell and all of it's neighbors</param>
-        /// <returns></returns>
-        public static int CountLivingNeighbors(int[,] mask)
-        {
-            return mask[0, 0] + mask[0, 1] + mask[0, 2] + mask[1, 0] + mask[1, 2] + mask[2, 0] + mask[2, 1] +
-                   mask[2, 2];
-        }
+        
 
         /// <summary>
         /// Generates the next generation matrix
@@ -202,6 +193,12 @@ namespace GoL
 
         private Dictionary<Point, bool> cells = new Dictionary<Point, bool>();
 
+        private Size[] neighborPositions = new Size[]
+        {
+            new Size(-1, -1), new Size(0, -1), new Size(1, -1),
+            new Size(-1, 0),new Size(1, 0),
+            new Size(-1, 1),new Size(0, 1),new Size(1, 1)
+        };
         
 
 
@@ -253,7 +250,18 @@ namespace GoL
 
         public int CountLivingNeighbors(int x, int y)
         {
-            throw new NotImplementedException();
+
+            int livingNeighbors = 0;
+            foreach (var neighborPosition in neighborPositions)
+            {
+                var neighborCell = Point.Add(new Point(x, y),neighborPosition)  ;
+                if (cells.ContainsKey(neighborCell))
+                {
+                    livingNeighbors++;
+                }
+            }
+
+            return livingNeighbors;
         }
     }
 

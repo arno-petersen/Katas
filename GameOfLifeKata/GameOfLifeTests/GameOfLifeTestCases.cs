@@ -16,15 +16,28 @@ namespace GameOfLifeTests
             IGameOfLifeMatrix matrix = new GameOfLifeMultiArray(5,4);
             GameOfLife.InitializeGameOfLife(matrix,pattern);
 
-            Assert.AreEqual(3,matrix.CountLivingNeighbors(0,0));
+            CheckForLivingNeighbors(matrix);
+
+
+            // Test the dictionary version
+            matrix = new GameOfLifeDictionary(5,4);
+            GameOfLife.InitializeGameOfLife(matrix, pattern);
+            CheckForLivingNeighbors(matrix);
+
+
+        }
+
+        private static void CheckForLivingNeighbors(IGameOfLifeMatrix matrix)
+        {
+            Assert.AreEqual(3, matrix.CountLivingNeighbors(0, 0));
             Assert.AreEqual(3, matrix.CountLivingNeighbors(4, 3));
             Assert.AreEqual(3, matrix.CountLivingNeighbors(0, 3));
             Assert.AreEqual(3, matrix.CountLivingNeighbors(4, 0));
 
-            for (int i = 1; i < 4; i++){
-                Assert.AreEqual(5, matrix.CountLivingNeighbors(i,0 ));
+            for (int i = 1; i < 4; i++)
+            {
+                Assert.AreEqual(5, matrix.CountLivingNeighbors(i, 0));
                 Assert.AreEqual(5, matrix.CountLivingNeighbors(i, 3));
-
             }
 
             for (int i = 1; i < 3; i++)
@@ -40,9 +53,6 @@ namespace GameOfLifeTests
                     Assert.AreEqual(8, matrix.CountLivingNeighbors(x, y));
                 }
             }
-
-
-
         }
 
         [Test]
@@ -62,50 +72,9 @@ namespace GameOfLifeTests
                     Assert.AreEqual(expected[y,x] == 1,gameOfLive.GameOfLifeMatrix.IsCellAlive(x,y), $"Cell {x},{y}");
                 }
             }
-            
-
         }
 
-        [Test]
-        public void CountLivingNeighborsShouldReturNumberOfLivingNeighbors()
-        {
-
-            int[,] mask;
-
-            for (int i = 0; i < 2; i++)
-            {
-                mask = new int[3, 3] {{1, 1, 1}, {1, i, 1}, {1, 1, 1}};
-                Assert.AreEqual(8, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] {{0, 1, 1}, {1, i, 1}, {1, 1, 1}};
-                Assert.AreEqual(7, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] {{0, 1, 1}, {1, i, 1}, {1, 1, 1}};
-                Assert.AreEqual(7, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] { { 0, 0, 1 }, { 1, i, 1 }, { 1, 1, 1 } };
-                Assert.AreEqual(6, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] { { 0, 0, 0 }, { 1, i, 1 }, { 1, 1, 1 } };
-                Assert.AreEqual(5, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] { { 0, 0, 0 }, { 0, i, 1 }, { 1, 1, 1 } };
-                Assert.AreEqual(4, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] { { 0, 0, 0 }, { 0, i, 0 }, { 1, 1, 1 } };
-                Assert.AreEqual(3, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] { { 0, 0, 0 }, { 0, i, 0 }, { 0, 1, 1 } };
-                Assert.AreEqual(2, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] { { 0, 0, 0 }, { 0, i, 0 }, { 0, 0, 1 } };
-                Assert.AreEqual(1, GoL.GameOfLife.CountLivingNeighbors(mask));
-
-                mask = new int[3, 3] { { 0, 0, 0 }, { 0, i, 0 }, { 0, 0, 0 } };
-                Assert.AreEqual(0, GoL.GameOfLife.CountLivingNeighbors(mask));
-            }
-
-        }
+        
 
         [Test]
         public void MatrixContainInitialzationData()
